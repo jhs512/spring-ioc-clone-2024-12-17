@@ -30,4 +30,16 @@ public class ApplicationContextTest {
 
         assertThat(testPostService).isNotNull();
     }
+
+    @Test
+    @DisplayName("testPostService 빈을 다시 얻기, 싱글톤이어야 함")
+    public void t3() {
+        TestPostService testPostService1 = applicationContext
+                .genBean("testPostService");
+
+        TestPostService testPostService2 = applicationContext
+                .genBean("testPostService");
+
+        assertThat(testPostService1).isSameAs(testPostService2);
+    }
 }
