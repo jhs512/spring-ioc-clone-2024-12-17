@@ -18,4 +18,13 @@ public class ApplicationContextTest {
     public void t1() {
         System.out.println(applicationContext);
     }
+
+    @Test
+    @DisplayName("testPostService 빈 얻기")
+    public void t2() {
+        TestPostService testPostService = applicationContext
+                .genBean("testPostService");
+
+        assertThat(testPostService).isNotNull();
+    }
 }
