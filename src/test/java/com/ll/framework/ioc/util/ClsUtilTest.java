@@ -80,4 +80,17 @@ public class ClsUtilTest {
         assertThat(parameterNames[0]).isEqualTo("name");
         assertThat(parameterNames[1]).isEqualTo("number");
     }
+
+    @Test
+    @DisplayName("ClsUtil.getParameters with clsPath, methodName")
+    void t8() {
+        Parameter[] parameters = ClsUtil.getParameters("com.ll.framework.ioc.util.sample.TestCar", "runTo", new Object[]{"BMW", 1234});
+        // new TestCar("BMW", 1234).runTo("Seoul", 100);
+
+        assertThat(parameters[0].getType()).isEqualTo(String.class);
+        assertThat(parameters[0].getName()).isEqualTo("destination");
+
+        assertThat(parameters[1].getType()).isEqualTo(int.class);
+        assertThat(parameters[1].getName()).isEqualTo("speed");
+    }
 }
