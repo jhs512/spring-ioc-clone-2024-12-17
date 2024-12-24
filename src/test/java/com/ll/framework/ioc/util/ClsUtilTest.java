@@ -19,6 +19,8 @@ public class ClsUtilTest {
     @DisplayName("ClsUtil.construct")
     void t2() {
         TestCar testCar = ClsUtil.construct("com.ll.framework.ioc.util.sample.TestCar", new Object[]{"BMW", 1234});
+        // 위 코드는 아래와 같은 의미이다.
+        // new TestCar("BMW", 1234);
 
         assertThat(testCar.getName()).isEqualTo("BMW");
         assertThat(testCar.getNumber()).isEqualTo(1234);
