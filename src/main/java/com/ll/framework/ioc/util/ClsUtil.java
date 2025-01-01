@@ -27,12 +27,32 @@ public class ClsUtil {
     private static <T> Constructor<T> getConstructor(Class<T> cls, Object[] args) {
         Class[] argTypes = getTypes(args);
 
-        return cls.getConstructor();
+        return cls.getConstructor(argTypes);
     }
 
     private static Class[] getTypes(Object[] args) {
         return Arrays.stream(args)
-                .map(Object::getClass)
+                .map(e -> {
+                    if (e instanceof Boolean) {
+                        return boolean.class;
+                    } else if (e instanceof Byte) {
+                        return byte.class;
+                    } else if (e instanceof Short) {
+                        return short.class;
+                    } else if (e instanceof Integer) {
+                        return int.class;
+                    } else if (e instanceof Long) {
+                        return long.class;
+                    } else if (e instanceof Float) {
+                        return float.class;
+                    } else if (e instanceof Double) {
+                        return double.class;
+                    } else if (e instanceof Character) {
+                        return char.class;
+                    }
+
+                    return e.getClass();
+                })
                 .toArray(Class[]::new);
     }
 
