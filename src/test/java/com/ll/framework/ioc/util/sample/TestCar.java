@@ -8,4 +8,9 @@ import lombok.Getter;
 public class TestCar {
     private String name;
     private int number;
+
+    public TestCar() {
+        this.name = "BenZ";
+        this.number = 9876;
+    }
 }
