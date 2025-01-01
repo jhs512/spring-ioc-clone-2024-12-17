@@ -23,8 +23,17 @@ public class ClsUtil {
         return constructor.newInstance(args);
     }
 
+    @SneakyThrows
     private static <T> Constructor<T> getConstructor(Class<T> cls, Object[] args) {
-        return (Constructor<T>) cls.getDeclaredConstructors()[0];
+        Class[] argTypes = getTypes(args);
+
+        return cls.getConstructor();
+    }
+
+    private static Class[] getTypes(Object[] args) {
+        return Arrays.stream(args)
+                .map(Object::getClass)
+                .toArray(Class[]::new);
     }
 
     public static Parameter[] getParameters(String clsPath, Object[] args) {
