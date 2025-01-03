@@ -1,9 +1,8 @@
 package com.ll.framework.ioc;
 
-import com.ll.domain.testPost.testPost.repository.TestPostRepository;
-import com.ll.domain.testPost.testPost.service.TestFacadePostService;
-import com.ll.domain.testPost.testPost.service.TestPostService;
+import com.ll.framework.ioc.util.ClsUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,17 +22,20 @@ public class ApplicationContext {
         Object bean = beans.get(beanName);
 
         if (bean == null) {
-            bean = switch (beanName) {
-                case "testFacadePostService" -> new TestFacadePostService(
-                        genBean("testPostService"),
-                        genBean("testPostRepository")
-                );
-                case "testPostService" -> new TestPostService(
-                        genBean("testPostRepository")
-                );
-                case "testPostRepository" -> new TestPostRepository();
+            String clsPath = switch (beanName) {
+                case "testFacadePostService" -> "com.ll.domain.testPost.testPost.service.TestFacadePostService";
+                case "testPostService" -> "com.ll.domain.testPost.testPost.service.TestPostService";
+                case "testPostRepository" -> "com.ll.domain.testPost.testPost.repository.TestPostRepository";
                 default -> null;
             };
+
+            String[] parameterNames = ClsUtil.getParameterNames(clsPath);
+
+            Object[] args = Arrays.stream(parameterNames)
+                    .map(this::genBean)
+                    .toArray();
+
+            bean = ClsUtil.construct(clsPath, args);
 
             beans.put(beanName, bean);
         }
