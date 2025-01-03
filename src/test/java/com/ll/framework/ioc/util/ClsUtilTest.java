@@ -1,6 +1,7 @@
 package com.ll.framework.ioc.util;
 
 import com.ll.framework.ioc.util.sample.TestCar;
+import com.ll.framework.ioc.util.sample.TestPerson;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -121,5 +122,14 @@ public class ClsUtilTest {
 
         assertThat(parameterNames[0]).isEqualTo("name");
         assertThat(parameterNames[1]).isEqualTo("number");
+    }
+
+    @Test
+    @DisplayName("ClsUtil.getParameterNames with no args")
+    void t12() {
+        String[] parameterNames = ClsUtil.getParameterNames(TestPerson.class);
+
+        assertThat(parameterNames[0]).isEqualTo("name");
+        assertThat(parameterNames[1]).isEqualTo("age");
     }
 }

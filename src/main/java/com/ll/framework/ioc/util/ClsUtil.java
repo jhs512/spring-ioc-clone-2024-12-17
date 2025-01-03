@@ -81,4 +81,18 @@ public class ClsUtil {
                 .map(Parameter::getName)
                 .toArray(String[]::new);
     }
+
+    public static String[] getParameterNames(String clsPath) {
+        return getParameterNames(loadClass(clsPath));
+    }
+
+    public static <T> String[] getParameterNames(Class<T> cls) {
+        Constructor<?> constructor = cls.getConstructors()[0];
+
+        return Arrays.stream(
+                        constructor.getParameters()
+                )
+                .map(Parameter::getName)
+                .toArray(String[]::new);
+    }
 }
