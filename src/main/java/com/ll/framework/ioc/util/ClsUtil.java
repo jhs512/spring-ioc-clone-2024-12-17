@@ -1,10 +1,17 @@
 package com.ll.framework.ioc.util;
 
+import com.ll.standard.util.Ut;
 import lombok.SneakyThrows;
+import org.reflections.Reflections;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.reflections.scanners.Scanners.TypesAnnotated;
 
 public class ClsUtil {
     @SneakyThrows
@@ -94,5 +101,16 @@ public class ClsUtil {
                 )
                 .map(Parameter::getName)
                 .toArray(String[]::new);
+    }
+
+    public static Map<String, Class<?>> annotatedClasses(String prefix, Class<? extends Annotation> annotationCls) {
+        Reflections reflections = new Reflections(prefix, TypesAnnotated);
+
+        Map<String, Class<?>> clsMap = reflections.getTypesAnnotatedWith(annotationCls)
+                .stream()
+                .filter(cls -> !cls.isAnnotation())
+                .collect(LinkedHashMap::new, (map, cls) -> map.put(Ut.str.lcfirst(cls.getSimpleName()), cls), Map::putAll);
+
+        return clsMap;
     }
 }

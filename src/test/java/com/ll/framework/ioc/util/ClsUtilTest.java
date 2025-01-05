@@ -1,19 +1,18 @@
 package com.ll.framework.ioc.util;
 
+import com.ll.domain.testPost.testPost.repository.TestPostRepository;
+import com.ll.domain.testPost.testPost.service.TestFacadePostService;
+import com.ll.domain.testPost.testPost.service.TestPostService;
 import com.ll.framework.ioc.annotations.Component;
 import com.ll.framework.ioc.util.sample.TestCar;
 import com.ll.framework.ioc.util.sample.TestPerson;
-import com.ll.standard.util.Ut;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.reflections.Reflections;
 
 import java.lang.reflect.Parameter;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.reflections.scanners.Scanners.TypesAnnotated;
 
 public class ClsUtilTest {
     @Test
@@ -140,14 +139,13 @@ public class ClsUtilTest {
     }
 
     @Test
-    @DisplayName("reflections test")
+    @DisplayName("annotatedClasses")
     void t13() {
-        Reflections reflections = new Reflections("com.ll", TypesAnnotated);
+        Map<String, Class<?>> annotatedClasses = ClsUtil.annotatedClasses("com.ll", Component.class);
 
-        Map<String, Class<?>> clsMap = reflections.getTypesAnnotatedWith(Component.class)
-                .stream()
-                .filter(cls -> !cls.isAnnotation())
-                .collect(LinkedHashMap::new, (map, cls) -> map.put(Ut.str.lcfirst(cls.getSimpleName()), cls), Map::putAll);
-        System.out.println(clsMap);
+        assertThat(annotatedClasses).containsKeys("testFacadePostService", "testPostService", "testPostRepository");
+        assertThat(annotatedClasses.get("testFacadePostService")).isEqualTo(TestFacadePostService.class);
+        assertThat(annotatedClasses.get("testPostService")).isEqualTo(TestPostService.class);
+        assertThat(annotatedClasses.get("testPostRepository")).isEqualTo(TestPostRepository.class);
     }
 }
