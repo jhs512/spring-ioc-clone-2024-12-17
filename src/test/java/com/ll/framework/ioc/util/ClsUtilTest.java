@@ -1,13 +1,19 @@
 package com.ll.framework.ioc.util;
 
+import com.ll.framework.ioc.annotations.Component;
 import com.ll.framework.ioc.util.sample.TestCar;
 import com.ll.framework.ioc.util.sample.TestPerson;
+import com.ll.standard.util.Ut;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.reflections.Reflections;
 
 import java.lang.reflect.Parameter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.reflections.scanners.Scanners.TypesAnnotated;
 
 public class ClsUtilTest {
     @Test
@@ -131,5 +137,17 @@ public class ClsUtilTest {
 
         assertThat(parameterNames[0]).isEqualTo("name");
         assertThat(parameterNames[1]).isEqualTo("age");
+    }
+
+    @Test
+    @DisplayName("reflections test")
+    void t13() {
+        Reflections reflections = new Reflections("com.ll", TypesAnnotated);
+
+        Map<String, Class<?>> clsMap = reflections.getTypesAnnotatedWith(Component.class)
+                .stream()
+                .filter(cls -> !cls.isAnnotation())
+                .collect(LinkedHashMap::new, (map, cls) -> map.put(Ut.str.lcfirst(cls.getSimpleName()), cls), Map::putAll);
+        System.out.println(clsMap);
     }
 }
