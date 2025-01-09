@@ -100,4 +100,10 @@ public class ApplicationContextTest {
 
         assertThat(testBaseObjectMapper).isNotNull();
     }
+
+    @Test
+    @DisplayName("BeanDefinition 은 Bean의 생성정보를 담고 있습니다.")
+    public void t9() {
+        BeanDefinition<TestPostService> beanDefinition = new BeanDefinition<>(TestPostService.class);
+    }
 }
