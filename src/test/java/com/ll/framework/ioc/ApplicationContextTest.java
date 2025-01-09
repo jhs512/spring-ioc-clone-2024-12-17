@@ -106,4 +106,12 @@ public class ApplicationContextTest {
     public void t9() {
         BeanDefinition<TestPostService> beanDefinition = new BeanDefinition<>(TestPostService.class);
     }
+
+    @Test
+    @DisplayName("beanDefinition.getParameterNames")
+    public void t10() {
+        BeanDefinition<TestPostService> beanDefinition = new BeanDefinition<>(TestPostService.class);
+        String[] parameterNames = beanDefinition.getParameterNames();
+        assertThat(parameterNames).containsExactly("testPostRepository");
+    }
 }
