@@ -105,6 +105,9 @@ public class ApplicationContextTest {
     @DisplayName("BeanDefinition 은 Bean의 생성정보를 담고 있습니다.")
     public void t9() {
         BeanDefinition<TestPostService> beanDefinition = new BeanDefinition<>(TestPostService.class);
+
+        assertThat(beanDefinition.getBeanName()).isEqualTo("testPostService");
+        assertThat(beanDefinition.isCreateTypeMethod()).isFalse();
     }
 
     @Test
@@ -112,6 +115,7 @@ public class ApplicationContextTest {
     public void t10() {
         BeanDefinition<TestPostService> beanDefinition = new BeanDefinition<>(TestPostService.class);
         String[] parameterNames = beanDefinition.getParameterNames();
+
         assertThat(parameterNames).containsExactly("testPostRepository");
     }
 }
