@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ll.domain.testPost.testPost.repository.TestPostRepository;
 import com.ll.domain.testPost.testPost.service.TestFacadePostService;
 import com.ll.domain.testPost.testPost.service.TestPostService;
+import com.ll.global.testJackson.TestJacksonConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -117,5 +118,14 @@ public class ApplicationContextTest {
         String[] parameterNames = beanDefinition.getParameterNames();
 
         assertThat(parameterNames).containsExactly("testPostRepository");
+    }
+
+    @Test
+    @DisplayName("new BeanDefinition<>(TestJacksonConfig.class, \"testBaseJavaTimeModule\")")
+    public void t11() {
+        BeanDefinition<JavaTimeModule> beanDefinition = new BeanDefinition<>(TestJacksonConfig.class, "testBaseJavaTimeModule");
+        assertThat(beanDefinition.getBeanName()).isEqualTo("testBaseJavaTimeModule");
+        assertThat(beanDefinition.getParameterNames()).isEmpty();
+        assertThat(beanDefinition.isCreateTypeMethod()).isTrue();
     }
 }

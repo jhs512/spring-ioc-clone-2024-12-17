@@ -30,6 +30,10 @@ public class ClsUtil {
         return constructor.newInstance(args);
     }
 
+    public static <T> Constructor<T> getConstructor(Class<T> cls) {
+        return (Constructor<T>) cls.getConstructors()[0];
+    }
+
     @SneakyThrows
     private static <T> Constructor<T> getConstructor(Class<T> cls, Object[] args) {
         Class[] argTypes = getTypes(args);
@@ -94,7 +98,7 @@ public class ClsUtil {
     }
 
     public static <T> String[] getParameterNames(Class<T> cls) {
-        Constructor<?> constructor = cls.getConstructors()[0];
+        Constructor<?> constructor = getConstructor(cls);
 
         return Arrays.stream(
                         constructor.getParameters()
