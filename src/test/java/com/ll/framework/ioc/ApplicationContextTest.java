@@ -128,4 +128,13 @@ public class ApplicationContextTest {
         assertThat(beanDefinition.getParameterNames()).isEmpty();
         assertThat(beanDefinition.isCreateTypeMethod()).isTrue();
     }
+
+    @Test
+    @DisplayName("new BeanDefinition<>(TestJacksonConfig.class, \"testBaseObjectMapper\")")
+    public void t12() {
+        BeanDefinition<JavaTimeModule> beanDefinition = new BeanDefinition<>(TestJacksonConfig.class, "testBaseObjectMapper");
+        assertThat(beanDefinition.getBeanName()).isEqualTo("testBaseObjectMapper");
+        assertThat(beanDefinition.getParameterNames()).containsExactly("testBaseJavaTimeModule");
+        assertThat(beanDefinition.isCreateTypeMethod()).isTrue();
+    }
 }

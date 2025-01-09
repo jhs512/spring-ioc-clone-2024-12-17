@@ -33,7 +33,9 @@ public class BeanDefinition<T> {
     }
 
     public String[] getParameterNames() {
-        return ClsUtil.getParameterNames(cls);
+        if (!isCreateTypeMethod()) return ClsUtil.getParameterNames(cls);
+
+        return ClsUtil.getParameterNames(makeMethod);
     }
 
     public boolean isCreateTypeMethod() {

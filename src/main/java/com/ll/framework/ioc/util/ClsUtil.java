@@ -6,6 +6,7 @@ import org.reflections.Reflections;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -102,6 +103,14 @@ public class ClsUtil {
 
         return Arrays.stream(
                         constructor.getParameters()
+                )
+                .map(Parameter::getName)
+                .toArray(String[]::new);
+    }
+
+    public static String[] getParameterNames(Executable executable) {
+        return Arrays.stream(
+                        executable.getParameters()
                 )
                 .map(Parameter::getName)
                 .toArray(String[]::new);
