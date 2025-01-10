@@ -137,4 +137,13 @@ public class ApplicationContextTest {
         assertThat(beanDefinition.getParameterNames()).containsExactly("testBaseJavaTimeModule");
         assertThat(beanDefinition.isCreateTypeMethod()).isTrue();
     }
+
+    @Test
+    @DisplayName("applicationContext.beanDefinitions")
+    public void t13() {
+        assertThat(applicationContext.beanDefinitions)
+                .containsKey("testPostService")
+                .containsKey("testPostRepository")
+                .containsKey("testFacadePostService");
+    }
 }
