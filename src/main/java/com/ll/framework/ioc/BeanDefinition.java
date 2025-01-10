@@ -46,19 +46,42 @@ public class BeanDefinition<T> {
     }
 
     public T createBean(ApplicationContext applicationContext) {
-        if (!isCreateTypeMethod()) {
-            return createBeanByConstructor(applicationContext);
-        }
-
-        return createBeanByMethod(applicationContext);
-    }
-
-    @SneakyThrows
-    private T createBeanByMethod(ApplicationContext applicationContext) {
         Object[] parameters = Arrays.stream(getParameterNames())
                 .map(applicationContext::genBean)
                 .toArray();
 
+        T bean = !isCreateTypeMethod()
+                ? createBeanByConstructor(applicationContext, parameters)
+                : createBeanByMethod(applicationContext, parameters);
+
+        fillFields(bean, applicationContext);
+
+        return bean;
+    }
+
+    private void fillFields(T bean, ApplicationContext applicationContext) {
+        Arrays.stream(
+                        bean
+                                .getClass()
+                                .getDeclaredFields()
+                )
+                .filter(f -> f.isAnnotationPresent(Autowired.class))
+                .forEach(f -> {
+                    String beanName = f.getName();
+                    Object _bean = applicationContext.genBean(beanName);
+
+                    f.setAccessible(true);
+
+                    try {
+                        f.set(bean, _bean);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+    }
+
+    @SneakyThrows
+    private T createBeanByMethod(ApplicationContext applicationContext, Object[] parameters) {
         Method method = (Method) makeMethod;
 
         String configBeanName = Ut.str.lcfirst(method.getDeclaringClass().getSimpleName());
@@ -67,11 +90,7 @@ public class BeanDefinition<T> {
     }
 
     @SneakyThrows
-    private T createBeanByConstructor(ApplicationContext applicationContext) {
-        Object[] parameters = Arrays.stream(getParameterNames())
-                .map(applicationContext::genBean)
-                .toArray();
-
+    private T createBeanByConstructor(ApplicationContext applicationContext, Object[] parameters) {
         Constructor<T> constructor = (Constructor<T>) makeMethod;
 
         return constructor.newInstance(parameters);

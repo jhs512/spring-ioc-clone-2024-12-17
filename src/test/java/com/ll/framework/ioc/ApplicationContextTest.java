@@ -2,6 +2,7 @@ package com.ll.framework.ioc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ll.domain.testMail.testMail.service.TestFacadeMailLogService;
 import com.ll.domain.testMail.testMail.service.TestMailLogService;
 import com.ll.domain.testPost.testPost.repository.TestPostRepository;
 import com.ll.domain.testPost.testPost.service.TestFacadePostService;
@@ -167,6 +168,18 @@ public class ApplicationContextTest {
         assertThat(testMailLogService).hasFieldOrPropertyWithValue(
                 "testSafeExts",
                 applicationContext.genBean("testSafeExts")
+        );
+    }
+
+    @Test
+    @DisplayName("필드주입")
+    public void t15() {
+        TestFacadeMailLogService testFacadeMailLogService = applicationContext.genBean("testFacadeMailLogService");
+        assertThat(testFacadeMailLogService).isNotNull();
+
+        assertThat(testFacadeMailLogService).hasFieldOrPropertyWithValue(
+                "testMailLogService",
+                applicationContext.genBean("testMailLogService")
         );
     }
 }
