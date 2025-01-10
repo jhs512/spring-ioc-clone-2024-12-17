@@ -1,5 +1,6 @@
 package com.ll.framework.ioc;
 
+import com.ll.framework.ioc.annotations.Autowired;
 import com.ll.framework.ioc.util.ClsUtil;
 import com.ll.standard.util.Ut;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class BeanDefinition<T> {
 
     public BeanDefinition(Class<T> cls) {
         this.cls = cls;
-        this.makeMethod = ClsUtil.getConstructor(cls);
+        this.makeMethod = ClsUtil.getConstructor(cls, Autowired.class);
         this.beanName = Ut.str.lcfirst(cls.getSimpleName());
     }
 
@@ -35,7 +36,7 @@ public class BeanDefinition<T> {
     }
 
     public String[] getParameterNames() {
-        if (!isCreateTypeMethod()) return ClsUtil.getParameterNames(cls);
+        if (!isCreateTypeMethod()) return ClsUtil.getParameterNames(cls, Autowired.class);
 
         return ClsUtil.getParameterNames(makeMethod);
     }

@@ -35,6 +35,13 @@ public class ClsUtil {
         return (Constructor<T>) cls.getConstructors()[0];
     }
 
+    public static <T> Constructor<T> getConstructor(Class<T> cls, Class<? extends Annotation> annotationClass) {
+        return (Constructor<T>) Arrays.stream(cls.getConstructors())
+                .filter(c -> c.isAnnotationPresent(annotationClass))
+                .findFirst()
+                .orElseGet(() -> getConstructor(cls));
+    }
+
     @SneakyThrows
     private static <T> Constructor<T> getConstructor(Class<T> cls, Object[] args) {
         Class[] argTypes = getTypes(args);
@@ -100,6 +107,16 @@ public class ClsUtil {
 
     public static <T> String[] getParameterNames(Class<T> cls) {
         Constructor<?> constructor = getConstructor(cls);
+
+        return Arrays.stream(
+                        constructor.getParameters()
+                )
+                .map(Parameter::getName)
+                .toArray(String[]::new);
+    }
+
+    public static <T> String[] getParameterNames(Class<T> cls, Class<? extends Annotation> annotationClass) {
+        Constructor<?> constructor = getConstructor(cls, annotationClass);
 
         return Arrays.stream(
                         constructor.getParameters()
