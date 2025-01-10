@@ -3,7 +3,9 @@ package com.ll.framework.ioc;
 import com.ll.framework.ioc.util.ClsUtil;
 import com.ll.standard.util.Ut;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -40,5 +42,37 @@ public class BeanDefinition<T> {
 
     public boolean isCreateTypeMethod() {
         return makeMethod instanceof Method;
+    }
+
+    public T createBean(ApplicationContext applicationContext) {
+        if (!isCreateTypeMethod()) {
+            return createBeanByConstructor(applicationContext);
+        }
+
+        return createBeanByMethod(applicationContext);
+    }
+
+    @SneakyThrows
+    private T createBeanByMethod(ApplicationContext applicationContext) {
+        Object[] parameters = Arrays.stream(getParameterNames())
+                .map(applicationContext::genBean)
+                .toArray();
+
+        Method method = (Method) makeMethod;
+
+        String configBeanName = Ut.str.lcfirst(method.getDeclaringClass().getSimpleName());
+
+        return (T) method.invoke(applicationContext.genBean(configBeanName), parameters);
+    }
+
+    @SneakyThrows
+    private T createBeanByConstructor(ApplicationContext applicationContext) {
+        Object[] parameters = Arrays.stream(getParameterNames())
+                .map(applicationContext::genBean)
+                .toArray();
+
+        Constructor<T> constructor = (Constructor<T>) makeMethod;
+
+        return constructor.newInstance(parameters);
     }
 }

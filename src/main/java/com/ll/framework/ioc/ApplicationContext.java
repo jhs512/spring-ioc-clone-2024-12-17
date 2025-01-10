@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 public class ApplicationContext {
     private Map<String, Object> beans;
     private String basePackage;
-    private Map<String, Class<?>> beanClasses;
     Map<String, BeanDefinition> beanDefinitions;
 
     public ApplicationContext(String basePackage) {
@@ -22,7 +21,6 @@ public class ApplicationContext {
     }
 
     public void init() {
-        this.beanClasses = ClsUtil.annotatedClasses(basePackage, Component.class);
         this.beanDefinitions = Stream.concat(
                 ClsUtil.annotatedClasses(basePackage, Component.class)
                         .values()
@@ -43,15 +41,13 @@ public class ApplicationContext {
         Object bean = beans.get(beanName);
 
         if (bean == null) {
-            Class<T> cls = (Class<T>) beanClasses.get(beanName);
+            BeanDefinition<T> beanDefinition = beanDefinitions.get(beanName);
 
-            String[] parameterNames = ClsUtil.getParameterNames(cls);
+            if (beanDefinition == null) {
+                throw new RuntimeException("No such beanDefinition: " + beanName);
+            }
 
-            Object[] args = Arrays.stream(parameterNames)
-                    .map(this::genBean)
-                    .toArray();
-
-            bean = ClsUtil.construct(cls, args);
+            bean = beanDefinition.createBean(this);
 
             beans.put(beanName, bean);
         }
