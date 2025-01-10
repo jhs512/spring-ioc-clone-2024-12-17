@@ -2,6 +2,7 @@ package com.ll.framework.ioc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ll.domain.testMail.testMail.service.TestMailLogService;
 import com.ll.domain.testPost.testPost.repository.TestPostRepository;
 import com.ll.domain.testPost.testPost.service.TestFacadePostService;
 import com.ll.domain.testPost.testPost.service.TestPostService;
@@ -147,5 +148,25 @@ public class ApplicationContextTest {
                 .containsKey("testFacadePostService")
                 .containsKey("testBaseJavaTimeModule")
                 .containsKey("testBaseObjectMapper");
+    }
+
+    @Test
+    @DisplayName("testMailLogService 빈을 생성")
+    public void t14() {
+        TestMailLogService testMailLogService = applicationContext.genBean("testMailLogService");
+        assertThat(testMailLogService).isNotNull();
+
+        assertThat(testMailLogService).hasFieldOrPropertyWithValue(
+                "testFacadePostService",
+                applicationContext.genBean("testFacadePostService")
+        );
+        assertThat(testMailLogService).hasFieldOrPropertyWithValue(
+                "testMailLogRepository",
+                applicationContext.genBean("testMailLogRepository")
+        );
+        assertThat(testMailLogService).hasFieldOrPropertyWithValue(
+                "testSafeExts",
+                applicationContext.genBean("testSafeExts")
+        );
     }
 }
