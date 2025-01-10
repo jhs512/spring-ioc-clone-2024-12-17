@@ -144,6 +144,8 @@ public class ApplicationContextTest {
         assertThat(applicationContext.beanDefinitions)
                 .containsKey("testPostService")
                 .containsKey("testPostRepository")
-                .containsKey("testFacadePostService");
+                .containsKey("testFacadePostService")
+                .containsKey("testBaseJavaTimeModule")
+                .containsKey("testBaseObjectMapper");
     }
 }

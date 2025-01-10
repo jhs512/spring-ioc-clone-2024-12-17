@@ -1,11 +1,14 @@
 package com.ll.framework.ioc;
 
+import com.ll.framework.ioc.annotations.Bean;
 import com.ll.framework.ioc.annotations.Component;
+import com.ll.framework.ioc.annotations.Configuration;
 import com.ll.framework.ioc.util.ClsUtil;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class ApplicationContext {
     private Map<String, Object> beans;
@@ -20,13 +23,20 @@ public class ApplicationContext {
 
     public void init() {
         this.beanClasses = ClsUtil.annotatedClasses(basePackage, Component.class);
-        this.beanDefinitions = ClsUtil.annotatedClasses(basePackage, Component.class)
-                .values()
-                .stream()
-                .collect(LinkedHashMap::new, (map, cls) -> {
-                    BeanDefinition beanDefinition = new BeanDefinition(cls);
-                    map.put(beanDefinition.getBeanName(), beanDefinition);
-                }, Map::putAll);
+        this.beanDefinitions = Stream.concat(
+                ClsUtil.annotatedClasses(basePackage, Component.class)
+                        .values()
+                        .stream()
+                        .map(BeanDefinition::new),
+                ClsUtil.annotatedClasses(basePackage, Configuration.class)
+                        .values()
+                        .stream()
+                        .flatMap(cls ->
+                                Arrays.stream(cls.getMethods())
+                                        .filter(m -> m.isAnnotationPresent(Bean.class))
+                        )
+                        .map(method -> new BeanDefinition(method.getDeclaringClass(), method.getName()))
+        ).collect(LinkedHashMap::new, (map, bd) -> map.put(bd.getBeanName(), bd), Map::putAll);
     }
 
     public <T> T genBean(String beanName) {
